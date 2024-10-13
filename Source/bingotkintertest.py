@@ -1,4 +1,5 @@
 import io
+import time
 import os
 import tkinter as tk
 import base64
@@ -37,8 +38,8 @@ def threaded_function(arg):
     root.config(menu=menu)
     helpmenu = tk.Menu(menu, tearoff=False)
     menu.add_cascade(label='Help', menu=helpmenu)
-    helpmenu.add_command(label='About', command=root.quit)
-    helpmenu.add_command(label='Debug', command=open_popup1)
+    helpmenu.add_command(label='About', command=open_popup1)
+    helpmenu.add_command(label='Quit', command=root.quit)
     root.resizable(False, False)
     root.geometry('250x187')
     root.title("Console")
@@ -49,10 +50,18 @@ def threaded_function(arg):
         start.config(text="Restart")
         global i, text_width, text_line, reset_history, not_started
         text_line, text_width, i, reset_history, not_started = 0, 0, 0, 1, False
-        pygame.display.flip()
-    start =tk.Button(root, text="Start", image=im, compound='c', height=85, width=250, font=('Segoe UI', 50), command=reset)
+    def pause():
+        global paused
+        if paused == False:
+            pausebutton.config(text="Unpause")
+            paused = True
+        else:
+            pausebutton.config(text="Pause")
+            paused = False
+    start =tk.Button(root, text="Start", image=im, compound='c', height=85, width=250, font=('Segoe UI', 48), command=reset)
     start.pack()
-    tk.Button(root, text="Pause", image=im, compound='c', height=85, width=250, font=('Segoe UI', 50)).pack()
+    pausebutton = tk.Button(root, text="Pause", image=im, compound='c', height=85, width=250, font=('Segoe UI', 48), command=pause)
+    pausebutton.pack()
     root.mainloop()
 numberhistoryrect = pygame.Rect(480, 0, 480, 480)
 currentletter = ""
@@ -118,8 +127,8 @@ def init(screen):
     pygame.quit()
 
 def draw(screen, game_objects):
-    clock = pygame.time.Clock()
-    global closed, i, text_line, text_width, reset_history, not_started
+    global closed, i, text_line, text_width, reset_history, not_started, paused
+    paused = False
     reset_history = 0
     i = 0
     text_width = 0
@@ -168,7 +177,15 @@ def draw(screen, game_objects):
             i += 1
             screen.blit(text_surface, text_surface.get_rect(center=(240, 240)))
             pygame.display.flip()
-            clock.tick(1)
+            while True:
+                for n in range(10):
+                    time.sleep(0.1)
+                    if reset_history == 1:
+                        break
+                break
+            while True:
+                if paused == False:
+                    break
 def run():
     if closed == False:
         hwnd = pygame.display.get_wm_info()['window']
