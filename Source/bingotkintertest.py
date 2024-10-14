@@ -8,12 +8,12 @@ import pygame # type: ignore
 import random
 import win32gui # type: ignore
 from threading import Thread
-global closed, bingonumbers, font2, fontsize
+global closed, bingonumbers, font2, fontsize, currentseed
+currentseed = 0
 fontsize = 48
 closed = False
 def open_popup2():
     global root, img, im, wait_time, currentseed, seed_label, wait_label, fontsize
-    currentseed = 0
     top2 = tk.Toplevel(root)
     def save_settings():
         global wait_time, bingonumbers, start, not_started, currentseed, seed_label, wait_label, fontsize, font2
