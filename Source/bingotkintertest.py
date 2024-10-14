@@ -8,13 +8,15 @@ import pygame # type: ignore
 import random
 import win32gui # type: ignore
 from threading import Thread
-global closed
+global closed, bingonumbers, font2, fontsize
+fontsize = 48
 closed = False
 def open_popup2():
-    global root, img, im, wait_time
+    global root, img, im, wait_time, currentseed, seed_label, wait_label, fontsize
+    currentseed = 0
     top2 = tk.Toplevel(root)
     def save_settings():
-        global wait_time
+        global wait_time, bingonumbers, start, not_started, currentseed, seed_label, wait_label, fontsize, font2
         if not e2.get() == "":
             try:
                 val = int(str(e2.get()))
@@ -22,23 +24,39 @@ def open_popup2():
                 messagebox.showerror("Error", "Seed is not intiger")
             else:
                 random.seed(int(str(e2.get())))
+                currentseed = int(str(e2.get()))
+                seed_label.config(text=str(currentseed))
+                bingonumbers = random.sample(range(1, 76), 75)
+                start.config(text="Start")
         if not e1.get() == "":
             try:
                 val = float(str(e1.get()))
             except ValueError:
                 messagebox.showerror("Error", "Time is not float")
             else:
-                wait_time = int(str(e1.get()))
+                wait_time = int(round(float(e1.get()), 1)*10)
+                wait_label.config(text=str(wait_time/10))
+        fontsize = int(e3.get())
+        font2 = pygame.font.Font(pygame.font.get_default_font(), fontsize)
+        not_started = True
     top2.title("Settings")
     top2.resizable(False, False)
     top2.iconphoto(False, img)
-    tk.Label(top2, text='# of seconds per change').grid(row=0)
+    wait_label = tk.Label(top2, text=str(wait_time/10))
+    wait_label.grid(row=0, column=2)
+    seed_label = tk.Label(top2, text=str(currentseed))
+    seed_label.grid(row=1, column=2)
+    tk.Label(top2, text='# of seconds per change \n precision is 0.1').grid(row=0)
     tk.Label(top2, text='Seed').grid(row=1)
+    tk.Label(top2, text='Font Size of list').grid(row=2)
     e1 = tk.Entry(top2)
     e2 = tk.Entry(top2)
+    e3 = tk.Scale(top2, from_=12, to=72, orient="horizontal")
+    e3.set(fontsize)
     e1.grid(row=0, column=1)
     e2.grid(row=1, column=1)
-    tk.Button(top2, text="Save Settings", font=('Segoe UI', 12), command=save_settings).grid(row=2, column=0)
+    e3.grid(row=2, column=1)
+    tk.Button(top2, text="Save Settings", font=('Segoe UI', 12), command=save_settings).grid(row=3, column=0)
     top2.mainloop()
 def open_popup1():
     global root, im, img
@@ -46,7 +64,7 @@ def open_popup1():
     top1.configure(background='white')
     top1.iconphoto(False, img)
     top1.resizable(False, False)
-    top1.geometry("640x80")
+    top1.geometry("640x100")
     top1.title("About")
     tk.Label(top1, text= "Tehty Juho Jokisalo käyttämällä python 3.12.7", font=('Segoe UI', 10), bg="white", fg="black").place(x=0,y=0)
     tk.Label(top1, text= "Hello from the pygame community.", font=('Segoe UI', 10), bg="white", fg="black").place(x=0,y=20)
@@ -62,8 +80,9 @@ def open_popup1():
     link2.bind("<Enter>", lambda _:link2.config(font=('Segoe UI', 10, "underline")))
     link2.bind("<Leave>", lambda _:link2.config(font=('Segoe UI', 10)))
     link2.bind("<Button-1>", lambda _:os.system("start \"\" https://github.com/TheDoubleMix/PygameBingo"))
+    tk.Label(top1, text= "Käännetty PyInstallerilla. Tehdy Windows 10:lle", font=('Segoe UI', 10), bg="white", fg="black").place(x=0,y=80)
 def threaded_function(arg):
-    global closed, root, im, img, i
+    global closed, root, im, img, i, start
     root = tk.Tk()
     menu = tk.Menu(root)
     root.config(menu=menu)
@@ -161,7 +180,7 @@ def init(screen):
 def draw(screen, game_objects):
     global closed, i, text_line, text_width, reset_history, not_started, paused, wait_time
     paused = False
-    wait_time = int(12)
+    wait_time = int(120)
     reset_history = 0
     i = 0
     text_width = 0
@@ -211,14 +230,18 @@ def draw(screen, game_objects):
             screen.blit(text_surface, text_surface.get_rect(center=(240, 240)))
             pygame.display.flip()
             while True:
-                for n in range(wait_time*10):
+                for n in range(wait_time):
                     time.sleep(0.1)
-                    if reset_history == 1:
+                    if reset_history == 1 or not_started == True:
                         break
                 break
             while True:
                 if paused == False:
                     break
+            while not_started:
+                screen.fill("black")
+                pygame.display.flip()
+                i = 0
 def run():
     if closed == False:
         hwnd = pygame.display.get_wm_info()['window']

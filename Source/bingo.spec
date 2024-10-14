@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['bingo.py'],
+    ['bingotkintertest.py'],
     pathex=[],
     binaries=[],
     datas=[],
