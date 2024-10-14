@@ -2,6 +2,7 @@ import io
 import time
 import os
 import tkinter as tk
+from tkinter import messagebox
 import base64
 import pygame # type: ignore
 import random
@@ -10,12 +11,34 @@ from threading import Thread
 global closed
 closed = False
 def open_popup2():
-    global root, img, im
+    global root, img, im, wait_time
     top2 = tk.Toplevel(root)
+    def save_settings():
+        global wait_time
+        if not e2.get() == "":
+            try:
+                val = int(str(e2.get()))
+            except ValueError:
+                messagebox.showerror("Error", "Seed is not intiger")
+            else:
+                random.seed(int(str(e2.get())))
+        if not e1.get() == "":
+            try:
+                val = float(str(e1.get()))
+            except ValueError:
+                messagebox.showerror("Error", "Time is not float")
+            else:
+                wait_time = int(str(e1.get()))
     top2.title("Settings")
-    top2.geometry("250x150")
+    top2.resizable(False, False)
     top2.iconphoto(False, img)
-    tk.Button(top2, text="Save", image=im, compound='c', height=30, width=30).place(x=0, y=112)
+    tk.Label(top2, text='# of seconds per change').grid(row=0)
+    tk.Label(top2, text='Seed').grid(row=1)
+    e1 = tk.Entry(top2)
+    e2 = tk.Entry(top2)
+    e1.grid(row=0, column=1)
+    e2.grid(row=1, column=1)
+    tk.Button(top2, text="Save Settings", font=('Segoe UI', 12), command=save_settings).grid(row=2, column=0)
     top2.mainloop()
 def open_popup1():
     global root, im, img
@@ -136,8 +159,9 @@ def init(screen):
     pygame.quit()
 
 def draw(screen, game_objects):
-    global closed, i, text_line, text_width, reset_history, not_started, paused
+    global closed, i, text_line, text_width, reset_history, not_started, paused, wait_time
     paused = False
+    wait_time = int(12)
     reset_history = 0
     i = 0
     text_width = 0
@@ -187,7 +211,7 @@ def draw(screen, game_objects):
             screen.blit(text_surface, text_surface.get_rect(center=(240, 240)))
             pygame.display.flip()
             while True:
-                for n in range(10):
+                for n in range(wait_time*10):
                     time.sleep(0.1)
                     if reset_history == 1:
                         break
