@@ -8,6 +8,6 @@
 | -------- | ------- |
 |Pausing|:white_check_mark:|
 | Restarting |:white_check_mark:|
-|Seed Setting|:x:|
+|Seed Setting|:white_check_mark:|
 |Time Setting|:white_check_mark:|
 |Font Size Setting|:white_check_mark:|
