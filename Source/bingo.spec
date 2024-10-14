@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['bingotkintertest.py'],
+    ['bingo.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='bingo',
+    name='Bingo',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
