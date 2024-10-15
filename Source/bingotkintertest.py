@@ -195,16 +195,16 @@ def draw(screen, game_objects):
             return
         if not i > 74:
             screen.fill("black", rect=(0,0,GAME_WIDTH/2,GAME_HEIGHT))
-            if  bingonumbers[i] < 15:
+            if  bingonumbers[i] < 16:
                 currentletter = "B"
                 pygame.draw.circle(screen,color1,(240,240),240)
-            elif  bingonumbers[i] < 30:
+            elif  bingonumbers[i] < 31:
                 currentletter = "I"
                 pygame.draw.circle(screen,color2,(240,240),240)
-            elif  bingonumbers[i] < 45:
+            elif  bingonumbers[i] < 46:
                 currentletter = "N"
                 pygame.draw.circle(screen,color3,(240,240),240)
-            elif  bingonumbers[i] < 60:
+            elif  bingonumbers[i] < 61:
                 currentletter = "G"
                 pygame.draw.circle(screen,color4,(240,240),240)
             else:
